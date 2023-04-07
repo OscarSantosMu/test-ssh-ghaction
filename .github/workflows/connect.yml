@@ -19,10 +19,12 @@ jobs:
 
       - name: Copy private key
         run: |
-          echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/deployment
-          sudo chmod 600 ~/.ssh/deployment
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deployment.pem
+          chmod 600 ~/.ssh/deployment.pem
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Get VM specs
         run: |
-          ssh -i ~/.ssh/deployment ${{ secrets.SSH_USER }}@${{ secrets.VM_IP }} 'cat /etc/os-release' || exit 1
+          ssh -o "StrictHostKeyChecking=no" -i ~/.ssh/deployment.pem ${{ secrets.SSH_USER }}@${{ secrets.VM_IP }} 'cat /etc/os-release' || exit 1
 
