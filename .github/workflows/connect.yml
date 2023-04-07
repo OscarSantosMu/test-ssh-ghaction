@@ -17,14 +17,10 @@ jobs:
       - name: Accept remote host key
         run: ssh-keyscan -H ${{ secrets.VM_IP }} >> ~/.ssh/known_hosts
 
-      - name: Generate SSH keys
+      - name: Copy private key
         run: |
-          ssh-keygen -f ~/.ssh/deployment -t rsa -b 4096
-          chmod 600 ~/.ssh/deployment
-
-      - name: Copy public key to the server
-        run: |
-          ssh-copy-id -i ~/.ssh/deployment ${{ secrets.SSH_USER }}@${{ secrets.VM_IP }} || exit 1
+          echo ${{ secrets.SSH_PRIVATE_KEY }} > ~/.ssh/deployment
+          sudo chmod 600 ~/.ssh/deployment
 
       - name: Get VM specs
         run: |
