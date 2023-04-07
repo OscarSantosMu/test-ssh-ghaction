@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  connect:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +16,7 @@ jobs:
 
       - name: Generate SSH keys
         run: |
-          ssh-keygen -f ~/deployment -t rsa -b 4096
+          ssh-keygen -f ~/.ssh/deployment -t rsa -b 4096
           chmod 600 ~/.ssh/deployment
 
       - name: Copy public key to the server
