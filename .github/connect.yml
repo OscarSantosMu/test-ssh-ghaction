@@ -1,0 +1,28 @@
+name: Connect to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create SSH directory
+        run: mkdir -p ~/.ssh
+
+      - name: Generate SSH keys
+        run: |
+          ssh-keygen -f ~/deployment -t rsa -b 4096
+          chmod 600 ~/.ssh/deployment
+
+      - name: Copy public key to the server
+        run: |
+          ssh-copy-id -i ~/.ssh/deployment ${{ secrets.SSH_USER }}@${{ secrets.VM_IP }} || exit 1
+
+      - name: Get VM specs
+        run: |
+          ssh -i ~/.ssh/deployment ${{ secrets.SSH_USER }}@${{ secrets.VM_IP }} 'cat /etc/os-release' || exit 1
+
